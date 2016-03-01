@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Bevgame is a fun and challenging puzzle game. Try it today!">
+    <head>
+        
+        <link rel="stylesheet" type="text/css" href="vendors/css/normalize.css">
+        <link rel="stylesheet" type="text/css"  href="resources/css/style.css">        
+        <link rel="stylesheet" type="text/css" href="vendors/css/grid.css">        
+        <link rel="stylesheet" type="text/css" href="vendors/css/ionicons.min.css">
+        <link rel="stylesheet" type="text/css" href="vendors/css/animate.css">
+        <link rel="stylesheet" type="text/css" href="resources/css/queries.css">        
+        <link href='https://fonts.googleapis.com/css?family=Lato:400,400italic,300,100' rel='stylesheet' type='text/css'>        
+        <title>Bev Game</title>
+    </head>
+    
+    <body>
+        <header>
+            
+            <div >
+                <h1>Bev's Game</h1>
+                <!--
+                <a class="btn btn-full js--scroll-to-plan" href="#">Button 1</a>
+                <a class="btn btn-ghost js--scroll-to-start" href="#">Button 2</a>
+                -->
+            </div>
+        
+        </header>
+        
+        <section>
+            <div class="row">
+                <div class="col span-1-of-8 tool">
+                    <div >
+                        <img src="resources/images/toolbox.png" alt="Toolbox image">
+                        <h1>0</h1>
+                        <div>
+                            <ul>
+                                <li>
+                                </li>
+                                <li>
+                                </li>
+                                <li>
+                                </li>
+                                <li>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div >
+                        <h3>Messages</h3>
+                        <h4>Variables</h4>
+                            <p>Score: <span class="score"></span></p>
+                            <p>Computer move: <span class="compMove"></span></p>
+                            <p>Energy: <span class="displayEnergy"></span></p>
+                        <h5>Game Info</h5>
+                            <p class="messages"></p>
+                    </div>
+                </div>
+                <div class="col span-1-of-8 buffer">
+                </div>                
+                <div class="col span-4-of-8 game">
+                    <ul class="zero">
+                        <li class="zero"><img src="resources/images/regularBlocks.png" alt="Regular Block image"> </li>
+                        <li class="one"><img src="resources/images/regularBlocks.png" alt="Regular Block image"> </li>
+                        <li class="two"><img src="resources/images/regularBlocks.png" alt="Regular Block image"> </li>
+                        <li class="three"><img src="resources/images/regularBlocks.png" alt="Regular Block image"> </li>
+                    </ul>
+                    <ul class="one">
+                        <li class="zero"><img src="resources/images/regularBlocks.png" alt="Regular Block image"> </li>
+                        <li class="one"><img src="resources/images/regularBlocks.png" alt="Regular Block image"> </li>
+                        <li class="two"><img src="resources/images/regularBlocks.png" alt="Regular Block image"> </li>
+                        <li class="three"><img src="resources/images/regularBlocks.png" alt="Regular Block image"> </li>
+                    </ul>
+                    <ul class="two">
+                        <li class="zero"><img src="resources/images/regularBlocks.png" alt="Regular Block image"> </li>
+                        <li class="one"><img src="resources/images/regularBlocks.png" alt="Regular Block image"> </li>
+                        <li class="two"><img src="resources/images/regularBlocks.png" alt="Regular Block image"> </li>
+                        <li class="three"><img src="resources/images/regularBlocks.png" alt="Regular Block image"> </li>
+                    </ul>
+                    <ul class="three">
+                        <li class="zero"><img src="resources/images/regularBlocks.png" alt="Regular Block image"> </li>
+                        <li class="one"><img src="resources/images/regularBlocks.png" alt="Regular Block image"> </li>
+                        <li class="two"><img src="resources/images/regularBlocks.png" alt="Regular Block image"> </li>
+                        <li class="three"><img src="resources/images/regularBlocks.png" alt="Regular Block image"> </li>
+                    </ul>
+                    <ul class="four">
+                        
+                        <li class="zero"><img src="resources/images/regularBlocks.png" alt="Regular Block image"> </li>
+                        <li class="one"><img src="resources/images/regularBlocks.png" alt="Regular Block image"> </li>
+                        <li class="two"><img src="resources/images/regularBlocks.png" alt="Regular Block image"> </li>
+                        <li class="three"><img src="resources/images/regularBlocks.png" alt="Regular Block image"> </li>
+                    </ul>                    
+                    <ul class="five">
+                        <li class="zero"><img src="resources/images/regularBlocks.png" alt="Regular Block image"> </li>
+                        <li class="one"><img  src="resources/images/regularBlocks.png" alt="Regular Block image"> </li>
+                        <li class="two"><img  src="resources/images/regularBlocks.png" alt="Regular Block image"> </li>
+                        <li class="three"><img src="resources/images/regularBlocks.png" alt="Regular Block image"> </li>
+                    </ul>
+                    
+                </div>
+                <div class="col span-1-of-8 buffer">
+                </div>
+                <div class="col span-1-of-8 energy">
+                    
+                    <img src="resources/images/energybarJellyBabes.png" alt="Picture of energy baby">
+                    <img src="resources/images/energybarJellyBabes.png" alt="Picture of energy baby">
+                    <img src="resources/images/energybarJellyBabes.png" alt="Picture of energy baby">
+                    <img src="resources/images/energybarJellyBabes.png" alt="Picture of energy baby">
+                    <img src="resources/images/energybarJellyBabes.png" alt="Picture of energy baby">
+                    <img src="resources/images/energybarJellyBabes.png" alt="Picture of energy baby">
+                    <img src="resources/images/energybarJellyBabes.png" alt="Picture of energy baby">
+                    <img src="resources/images/energybarJellyBabes.png" alt="Picture of energy baby">
+                    <img src="resources/images/energybarJellyBabes.png" alt="Picture of energy baby">
+                    <img src="resources/images/energybarJellyBabes.png" alt="Picture of energy baby">
+                    <img src="resources/images/energybarJellyBabes.png" alt="Picture of energy baby">
+                    <img src="resources/images/energybarJellyBabes.png" alt="Picture of energy baby">
+                    <img src="resources/images/energybarJellyBabes.png" alt="Picture of energy baby">
+                    <img src="resources/images/energybarJellyBabes.png" alt="Picture of energy baby">
+                    <img src="resources/images/energybarJellyBabes.png" alt="Picture of energy baby">
+                    <img src="resources/images/energybarJellyBabes.png" alt="Picture of energy baby">
+                    <img src="resources/images/energybarJellyBabes.png" alt="Picture of energy baby">
+                    <img src="resources/images/energybarJellyBabes.png" alt="Picture of energy baby">
+                    <img src="resources/images/energybarJellyBabes.png" alt="Picture of energy baby">
+                    <img src="resources/images/energybarJellyBabes.png" alt="Picture of energy baby">
+                    <img src="resources/images/energybarJellyBabes.png" alt="Picture of energy baby">
+                    <img src="resources/images/energybarJellyBabes.png" alt="Picture of energy baby">
+                    <img src="resources/images/energybarJellyBabes.png" alt="Picture of energy baby">
+                    <img src="resources/images/energybarJellyBabes.png" alt="Picture of energy baby">                   
+                    
+                </div>           
+            
+            </div>        
+        </section>
+        
+        
+        
+        
+        <footer>
+            <div class="row">
+                <div class="col span-1-of-2 ">
+                    <ul class="footer-nav1">
+                        <li><a href=# >About us</a></li>
+                        <li><a href=# >Blog</a></li>
+                        <li><a href=# >Press</a></li>
+                        <li><a href=# >iOS App</a></li>
+                        <li><a href=# >Android App</a></li>           
+                        
+                    </ul>
+                </div>
+                <div class="col span-1-of-2 footer-nav2">
+                    <ul>
+                        <li><a href=# ><i class="ion-social-twitter"></i></a></li>
+                        <li><a href=# ><i class="ion-social-facebook"></i></a></li>
+                        <li><a href=# ><i class="ion-social-instagram"></i></a></li>
+                        <li><a href=# ><i class="ion-social-googleplus"></i></a></li>                        
+                    </ul>
+                </div>
+                
+            </div>
+            <div class="row">
+                <p>Copyright &copy; 2016 by Omnifood. All rights reserved.</p>
+            </div>   
+        
+        </footer>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/respond/1.4.2/respond.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/selectivizr/1.0.3b/selectivizr.min.js"></script>
+        <script src="vendors/javascript/jquery.waypoints.min.js"></script>
+        <script src="resources/javascript/js_scripts.js"></script>
+    </body>
+    
+</html>

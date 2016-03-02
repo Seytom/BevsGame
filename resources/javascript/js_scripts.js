@@ -23,7 +23,7 @@ $(document).ready(function(){
     var CSS_TILES = {"block":"resources/images/regularBlocks.png" , "heart":'resources/images/energyHearts.png', "clear":"resources/images/regularBlocks.png", "reinforced":"resources/images/reinforcedBlocks.png", "player":"resources/images/playerBlocks.png" };
     var playerTurn = true;
     var score = 0;
-    var tools = 0.0;
+    var tools = 0;
     var victory=ROWS*COLUMNS;
     var energy = 24;
     var playerTile; //variable for storing location of player tile, initially off the board so undefined here
@@ -46,6 +46,7 @@ function addEnergy(num){
     for(var i=0;i<num;i++){
         $(".energy").append('<img src="resources/images/energybarJellyBabes.png" alt="Picture of energy baby">');
     }
+    $('.displayEnergy').text(energy);
 }
     
     //Function to make and show legal moves
@@ -88,17 +89,20 @@ function makeMove(row, col){
         board[row][col]="player"; 
         playerTile[0]=row;
         playerTile[1]=col;
+        //var clearTile= 
         $("."+CSS_CLASS[row]+" li:nth-child("+ nth_col+") img").attr("src", CSS_TILES["player"]);
         $("."+CSS_CLASS[row]+" li:nth-child("+ nth_col+") img").removeClass("clear");
     
         score++;
-        $(".score").text(score);        
+        $(".score").text(score); 
+        //var tester = $attr('class').split(" ");
         if (score===12){
             alert("Energy bonus!");
             addEnergy(5);            
         }
         if(score===victory){
-            alert("Oh Joy! You win!!!!!");            
+            alert("Oh joy! You win!!!!!"); 
+            victory-- //so the message doesn't keep popping up after you win
         }
         else if(energy===0){
             alert("Drat and double drat! I'm sorry, you lose.");
@@ -113,11 +117,15 @@ function newGame(){
     energy = 24;   
     var energy_block = random_block();    
     var col_num = energy_block[1]+1;
-    board = Array.matrix(ROWS, COLUMNS, "block"); //Establish the board, with everything initially set to regular blocks.    
-    //Update board
+    //Establish the board, with everything initially set to regular blocks.
+    board = Array.matrix(ROWS, COLUMNS, "block");
+    alert("New Game!");
+    $('.game li img').attr("src", "resources/images/regularBlocks.png");
+     $('.game li').removeClass("clear");
+    
+    //Place random heart/energy tile on screen
     board[energy_block[0]][energy_block[1]]="heart";    
-    //Place heart/energy tile on screen{
-        $("." + CSS_CLASS[energy_block[0]]+ " "+ "li:nth-child("+col_num+") img").attr('src', CSS_TILES["heart"]);    
+    $("." + CSS_CLASS[energy_block[0]]+ " "+ "li:nth-child("+col_num+") img").attr('src', CSS_TILES["heart"]);    
 } // End of newGame function
     
 function computerTurn(){
@@ -180,7 +188,10 @@ $('.game li').click(function(){
     else{alert("You can only move one row up, down, left, or right.");}
     
 })    
-   
+
+$('.newGame').click(function(){
+    newGame();
+});
 
     
 newGame();    

@@ -112,8 +112,8 @@ li:first-child{
 
 /* -----------BUTTONS--------------- */
 .btn:link,
-.btn:visited,
-input[type=submit]{
+.btn:visited
+{
     display:inline-block;
     color:white;
     margin-right: 25px;
@@ -126,20 +126,22 @@ input[type=submit]{
     transition: background-color .5s;
 }
 
-.btn:hover,
-.btn:active,
-input[type=submit]:hover,
-input[type=submit]:active{
-    border: 1px solid #F89406;
+
+.btn:active
+{
+    border: 3px solid gold;
     background-color: #fff;
     color: #F89406;
 }
 
-.btn-full,
-input[type=submit]{
-    background-color: #F89406;
-    border: 1px solid #F89406;
+.btn-full
+{
+    background-color: #9e74bc;
+    padding: 5px;
+    border: 1px solid gold;
+    border-radius: 5px;
     color: #fff;
+    text-align: center;
 }
 
 .btn-ghost{
@@ -152,6 +154,11 @@ input[type=submit]{
 .btn-app:visited,
 input[type=submit] {
     border:0;
+}
+
+.newGame{
+    color:#b3de8a;
+    
 }
 
 /* -----------LINKS--------------- */

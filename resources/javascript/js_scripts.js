@@ -54,8 +54,7 @@ function makeMove(row, col){
         //these two variables adjust for use of the 'nth-child' css selector
         var nth_col = col+1; 
         var player_col = playerTile[1]+1;
-        $('.messages').text("You moved onto a "+board[row][col]+ " square");
-        
+        $('.messages').text("You moved onto a "+board[row][col]+ " square");       
                 
         //adjust energy/energy display
         switch(board[row][col]){
@@ -72,19 +71,19 @@ function makeMove(row, col){
                 addEnergy(5);
                 break;                    
             case "clear":
-                score-- //Subtract to counter normal addition
-                
+                score-- //Subtract to counter normal addition              
         } //End switch statement
-    $('.displayEnergy').text(energy);
+    $('.displayEnergy').text(energy);               
                 
-                
-        //Clear the tile the player is coming from  
+        //Clear the tile the player is coming from, after first turn  
         if(score>0){
             board[playerTile[0]][playerTile[1]]="clear";        
             $("."+CSS_CLASS[playerTile[0]]+" li:nth-child("+ player_col+") img").attr("src", CSS_TILES["clear"]);        
             $("."+CSS_CLASS[playerTile[0]]+" li:nth-child("+ player_col+")").addClass("clear");
         }
         
+        //Store the tile state
+        tileState = board[row][col];
         //Move the player
         board[row][col]="player"; 
         playerTile[0]=row;
@@ -95,8 +94,7 @@ function makeMove(row, col){
     
         score++;
         $(".score").text(score); 
-        //var tester = $attr('class').split(" ");
-        if (score===12){
+        if (score===12 & tileState!=="clear"){
             alert("Energy bonus!");
             addEnergy(5);            
         }
@@ -113,8 +111,7 @@ function makeMove(row, col){
 function newGame(){   
     playerTurn = true;
     score = 0;
-    tools = 0.0;
-    energy = 24;   
+    tools = 0.0;    
     var energy_block = random_block();    
     var col_num = energy_block[1]+1;
     //Establish the board, with everything initially set to regular blocks.
@@ -125,7 +122,10 @@ function newGame(){
     
     //Place random heart/energy tile on screen
     board[energy_block[0]][energy_block[1]]="heart";    
-    $("." + CSS_CLASS[energy_block[0]]+ " "+ "li:nth-child("+col_num+") img").attr('src', CSS_TILES["heart"]);    
+    $("." + CSS_CLASS[energy_block[0]]+ " "+ "li:nth-child("+col_num+") img").attr('src', CSS_TILES["heart"]); 
+    
+    //Add as many energy bunnies as needed
+    addEnergy(ROWS*COLUMNS-energy);
 } // End of newGame function
     
 function computerTurn(){
@@ -166,10 +166,8 @@ $('.game li').click(function(){
             alert("On the first turn, you may move to any square in the bottom row");
             return;
         }
-    } 
-    
-    //check if the move is legal and either make it or alert player why not
-    
+    }     
+    //check if the move is legal and either make it or alert player why not    
     var moveVal = Math.abs(thisRow-playerTile[0])+Math.abs(thisCol-playerTile[1]);
     var energyNeeded = 1; //regular and heart blocks
     if(board[thisRow][thisCol]==="reinforced"){
@@ -177,16 +175,14 @@ $('.game li').click(function(){
     }
     else if(board[thisRow][thisCol]==="clear"){
         energyNeeded--
-    }
-    
+    }    
     if(moveVal===1&energyNeeded<=energy){
         makeMove(thisRow, thisCol);
         computerTurn();
        }
     else if(energyNeeded>energy){alert("You do not have enough energy to make that move!")}
     else if(moveVal===0){alert("Must move to a new tile!")}
-    else{alert("You can only move one row up, down, left, or right.");}
-    
+    else{alert("You can only move one row up, down, left, or right.");}    
 })    
 
 $('.newGame').click(function(){

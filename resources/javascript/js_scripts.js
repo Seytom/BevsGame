@@ -23,7 +23,7 @@ $(document).ready(function(){
     var CSS_TILES = {"block":"resources/images/regularBlocks.png" , "heart":'resources/images/energyHearts.png', "clear":"resources/images/regularBlocks.png", "reinforced":"resources/images/reinforcedBlocks.png", "player":"resources/images/playerBlocks.png" };
     var playerTurn = true;
     var score = 0;
-    var tools = 0;
+    var tool = 0;
     var victory=ROWS*COLUMNS;
     var energy = 24;
     var playerTile; //variable for storing location of player tile, initially off the board so undefined here
@@ -49,26 +49,47 @@ function addEnergy(num){
     $('.displayEnergy').text(energy);
 }
     
+    //Helper function to update tool count/display
+function updateTool(){
+     tool +=1;
+     if(score===0) {tool--}; //when called by newGame, adjust tool count
+     var nthTool= tool%4;
+     if(nthTool===0){
+        $(".tool li").removeClass("ion-hammer");        
+     }
+     else {
+        $(".tool li:nth-child("+nthTool+")").addClass("ion-hammer");
+     }
+     $(".tool h1").text(Math.floor(tool/4));
+} //End of updateTool function
+    
     //Function to make and show legal moves
 function makeMove(row, col){
+        energy--;
+        $(".energy img:first-child").remove();        
+        score++;
+       
+        $(".score").text(score); 
+        
         //these two variables adjust for use of the 'nth-child' css selector
         var nth_col = col+1; 
         var player_col = playerTile[1]+1;
         $('.messages').text("You moved onto a "+board[row][col]+ " square");       
                 
-        //adjust energy/energy display
+        //adjust energy/energy display and tool/tool display
         switch(board[row][col]){
             case "reinforced":
-                energy = energy-2;
+                energy-=2;
                 $(".energy img:first-child").remove();
                 $(".energy img:first-child").remove();
+                updateTool();                
                 break;
-            case "block":
-                energy--;
-                $(".energy img:first-child").remove();
+            case "block":  
+                updateTool();
                 break;
             case "heart":
-                addEnergy(5);
+                addEnergy(2);
+                updateTool();
                 break;                    
             case "clear":
                 score-- //Subtract to counter normal addition              
@@ -90,13 +111,11 @@ function makeMove(row, col){
         playerTile[1]=col;
         //var clearTile= 
         $("."+CSS_CLASS[row]+" li:nth-child("+ nth_col+") img").attr("src", CSS_TILES["player"]);
-        $("."+CSS_CLASS[row]+" li:nth-child("+ nth_col+") img").removeClass("clear");
-    
-        score++;
-        $(".score").text(score); 
+        $("."+CSS_CLASS[row]+" li:nth-child("+ nth_col+") img").removeClass("clear");    
+        
         if (score===12 & tileState!=="clear"){
             alert("Energy bonus!");
-            addEnergy(5);            
+            addEnergy(2);            
         }
         if(score===victory){
             alert("Oh joy! You win!!!!!"); 
@@ -104,23 +123,27 @@ function makeMove(row, col){
         }
         else if(energy===0){
             alert("Drat and double drat! I'm sorry, you lose.");
-        }
-            
+        }            
 }   //End of makeMove function 
+    
+          
     
 function newGame(){   
     playerTurn = true;
     score = 0;
-    tools = 0.0;    
-    var energy_block = random_block();    
-    var col_num = energy_block[1]+1;
+    tool = 0;
+    updateTool();//clear tool part display and update score
+    $('body').removeClass('toolCursor'); // If they restarted while tool was in play
+    victory = ROWS*COLUMNS; //reset for the victory message
+    
     //Establish the board, with everything initially set to regular blocks.
-    board = Array.matrix(ROWS, COLUMNS, "block");
-    alert("New Game!");
+    board = Array.matrix(ROWS, COLUMNS, "block");  
     $('.game li img').attr("src", "resources/images/regularBlocks.png");
-     $('.game li').removeClass("clear");
+    $('.game li').removeClass("clear");
     
     //Place random heart/energy tile on screen
+    var energy_block = random_block();    
+    var col_num = energy_block[1]+1;  //For use with nth-child pseudo-class
     board[energy_block[0]][energy_block[1]]="heart";    
     $("." + CSS_CLASS[energy_block[0]]+ " "+ "li:nth-child("+col_num+") img").attr('src', CSS_TILES["heart"]); 
     
@@ -152,12 +175,13 @@ $('.game li').click(function(){
     var thisCSSCol = $(this).attr('class').split(" ")[0];
     var thisRow = CSS_CLASS.indexOf(thisCSSRow);
     var thisCol = CSS_CLASS.indexOf(thisCSSCol);
+    var thisTile = board[thisRow][thisCol];
     $('.messages').text("You clicked on: "+thisRow+",  "+thisCol);
     
-    //check to see if this is the first turn
-    if(board[ROWS-1].indexOf("clear")<0 & board[ROWS-1].indexOf("player")<0){
+    //Handle first turn separately
+    if(score===0){
         if(thisRow===ROWS-1){
-            playerTile = [thisRow, thisCol];
+            playerTile = [thisRow, thisCol]; //playerTile first defined, used in makeMove
             makeMove(thisRow, thisCol);
             computerTurn();
             return;
@@ -167,6 +191,23 @@ $('.game li').click(function(){
             return;
         }
     }     
+    
+    //check to see if useTool class is in effect, handle appropriately
+    if($('body').attr('class')){
+        if(board[thisRow][thisCol]==="reinforced"){
+            board[thisRow][thisCol]="block";
+            tool-=4;
+            var nthCol = thisCol+1;
+            $("."+thisCSSRow+" li:nth-child("+ nthCol+") img").attr("src", "resources/images/regularBlocks.png");
+            $('body').removeClass('toolCursor'); 
+            $(".tool h1").text(Math.floor(tool/4));
+            return;
+        }
+        else{
+            alert("Use the tool on a reinforced square");
+            return;
+        }
+    }
     //check if the move is legal and either make it or alert player why not    
     var moveVal = Math.abs(thisRow-playerTile[0])+Math.abs(thisCol-playerTile[1]);
     var energyNeeded = 1; //regular and heart blocks
@@ -183,7 +224,18 @@ $('.game li').click(function(){
     else if(energyNeeded>energy){alert("You do not have enough energy to make that move!")}
     else if(moveVal===0){alert("Must move to a new tile!")}
     else{alert("You can only move one row up, down, left, or right.");}    
-})    
+}); // End of $('.game li').click handler   
+
+ 
+$(".useTool").click(function(){        
+    if(tool>=4){
+        $('body').attr('class')? $('body').removeClass('toolCursor') : $('body').addClass('toolCursor');
+    }
+    else{
+        alert("You don't have a complete tool to use!");
+    }
+});
+    
 
 $('.newGame').click(function(){
     newGame();

@@ -79,8 +79,7 @@ function makeMove(row, col){
         //adjust energy/energy display and tool/tool display
         switch(board[row][col]){
             case "reinforced":
-                energy-=2;
-                $(".energy img:first-child").remove();
+                energy--;
                 $(".energy img:first-child").remove();
                 updateTool();                
                 break;
@@ -88,7 +87,7 @@ function makeMove(row, col){
                 updateTool();
                 break;
             case "heart":
-                addEnergy(2);
+                addEnergy(4);
                 updateTool();
                 break;                    
             case "clear":
@@ -118,10 +117,12 @@ function makeMove(row, col){
             addEnergy(2);            
         }
         if(score===victory){
+            playSound("cheer");
             alert("Oh joy! You win!!!!!"); 
             victory-- //so the message doesn't keep popping up after you win
         }
         else if(energy===0){
+            playSound("boo");
             alert("Drat and double drat! I'm sorry, you lose.");
         }            
 }   //End of makeMove function 
@@ -154,6 +155,7 @@ function newGame(){
 function computerTurn(){
     var compMove = random_block();
     if(board[compMove[0]][compMove[1]]==="block"){
+       playSound("reinforce");
        board[compMove[0]][compMove[1]]="reinforced";
        var cssCol = compMove[1]+1; //Adjust col number for use with nth-child
        $(".compMove").text(compMove[0]+", "+compMove[1]);
@@ -161,6 +163,18 @@ function computerTurn(){
         
     }
 } //End of computerTurn function
+    
+    // --- Sound Functions --- //
+function playSound(soundobj) {
+    var thissound=document.getElementById(soundobj);
+    thissound.play();
+}
+function stopSound(soundobj) {
+    var thissound=document.getElementById(soundobj);
+    thissound.pause();
+    thissound.currentTime = 0;
+}
+
     
     
     
@@ -197,6 +211,7 @@ $('.game li').click(function(){
         if(board[thisRow][thisCol]==="reinforced"){
             board[thisRow][thisCol]="block";
             tool-=4;
+            playSound('useTool');
             var nthCol = thisCol+1;
             $("."+thisCSSRow+" li:nth-child("+ nthCol+") img").attr("src", "resources/images/regularBlocks.png");
             $('body').removeClass('toolCursor'); 
@@ -241,7 +256,7 @@ $('.newGame').click(function(){
     newGame();
 });
 
-    
+playSound('backgroundMusic');    
 newGame();    
     
     

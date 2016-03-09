@@ -88,7 +88,7 @@ function makeMove(row, col){
                 break;
             case "heart":
                 addEnergy(4);
-                updateTool();
+                alert("You've got heart! Bonus energy awarded");
                 break;                    
             case "clear":
                 score-- //Subtract to counter normal addition              
@@ -121,9 +121,10 @@ function makeMove(row, col){
             alert("Oh joy! You win!!!!!"); 
             victory-- //so the message doesn't keep popping up after you win
         }
-        else if(energy===0){
+        else if(energy===0 & victory>=ROWS*COLUMNS){
             playSound("boo");
             alert("Drat and double drat! I'm sorry, you lose.");
+            victory-- //so the message doesn't keep popping up after you lose
         }            
 }   //End of makeMove function 
     
@@ -212,12 +213,13 @@ $('.game li').click(function(){
             board[thisRow][thisCol]="block";
             tool-=4;
             playSound('useTool');
+            $(".useTool").text("Use Tool");
             var nthCol = thisCol+1;
             $("."+thisCSSRow+" li:nth-child("+ nthCol+") img").attr("src", "resources/images/regularBlocks.png");
             $('body').removeClass('toolCursor'); 
             $(".tool h1").text(Math.floor(tool/4));
             return;
-        }
+        }       
         else{
             alert("Use the tool on a reinforced square");
             return;
@@ -225,30 +227,41 @@ $('.game li').click(function(){
     }
     //check if the move is legal and either make it or alert player why not    
     var moveVal = Math.abs(thisRow-playerTile[0])+Math.abs(thisCol-playerTile[1]);
-    var energyNeeded = 1; //regular and heart blocks
+    var energyNeeded = 1; //regular and clearblocks
     if(board[thisRow][thisCol]==="reinforced"){
         energyNeeded++
     }
-    else if(board[thisRow][thisCol]==="clear"){
+    else if(board[thisRow][thisCol]==="heart"){
         energyNeeded--
     }    
     if(moveVal===1&energyNeeded<=energy){
         makeMove(thisRow, thisCol);
         computerTurn();
        }
-    else if(energyNeeded>energy){alert("You do not have enough energy to make that move!")}
+    else if(energyNeeded>energy & victory>=COLUMNS*ROWS){alert("You do not have enough energy to make that move!")}
     else if(moveVal===0){alert("Must move to a new tile!")}
+    else if(victory<COLUMNS*ROWS) {
+        //After game is over, this block allows player to move around board
+        energy++;
+        tool--;
+        makeMove(thisRow, thisCol);
+    }
     else{alert("You can only move one row up, down, left, or right.");}    
 }); // End of $('.game li').click handler   
 
  
-$(".useTool").click(function(){        
+$(".useTool").click(function(){  
+    var toolText = $('.useTool').text();
+    console.log("tooltext: " +toolText);
     if(tool>=4){
         $('body').attr('class')? $('body').removeClass('toolCursor') : $('body').addClass('toolCursor');
-    }
+        toolText==="Use Tool" ? $(".useTool").text("Cancel") : $(".useTool").text("Use Tool");
+        
+    }    
     else{
         alert("You don't have a complete tool to use!");
     }
+    
 });
     
 

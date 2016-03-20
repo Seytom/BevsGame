@@ -85,6 +85,7 @@ function makeMove(row, col){
                 break;
             case "block":  
                 updateTool();
+                playSound("regular");
                 break;
             case "heart":
                 addEnergy(4);
@@ -144,7 +145,10 @@ function newGame(){
     $('.game li').removeClass("clear");
     
     //Place random heart/energy tile on screen
-    var energy_block = random_block();    
+    var energy_block = random_block();
+    if (energy_block[0]>2){
+        energy_block[0]-=3;  //Limit energy tile to top half of the board
+    }
     var col_num = energy_block[1]+1;  //For use with nth-child pseudo-class
     board[energy_block[0]][energy_block[1]]="heart";    
     $("." + CSS_CLASS[energy_block[0]]+ " "+ "li:nth-child("+col_num+") img").attr('src', CSS_TILES["heart"]); 
@@ -157,6 +161,9 @@ function computerTurn(){
     var compMove = random_block();
     if(board[compMove[0]][compMove[1]]==="block"){
        playSound("reinforce");
+       setTimeout(function(){
+           stopSound("reinforce");
+       },2000);
        board[compMove[0]][compMove[1]]="reinforced";
        var cssCol = compMove[1]+1; //Adjust col number for use with nth-child
        $(".compMove").text(compMove[0]+", "+compMove[1]);
@@ -168,6 +175,12 @@ function computerTurn(){
     // --- Sound Functions --- //
 function playSound(soundobj) {
     var thissound=document.getElementById(soundobj);
+    if(soundobj==='backgroundMusic'){
+        thissound.volume = 0.1;        
+    }
+    else{
+        thissound.volume = 0.3;
+    }    
     thissound.play();
 }
 function stopSound(soundobj) {
@@ -213,6 +226,7 @@ $('.game li').click(function(){
             board[thisRow][thisCol]="block";
             tool-=4;
             playSound('useTool');
+            
             $(".useTool").text("Use Tool");
             var nthCol = thisCol+1;
             $("."+thisCSSRow+" li:nth-child("+ nthCol+") img").attr("src", "resources/images/regularBlocks.png");
@@ -268,8 +282,10 @@ $(".useTool").click(function(){
 $('.newGame').click(function(){
     newGame();
 });
-
-playSound('backgroundMusic');    
+playSound('backgroundMusic');
+setInterval(function(){
+    playSound('backgroundMusic');
+},10600);
 newGame();    
     
     

@@ -65,35 +65,38 @@ function updateTool(){
     
     //Function to make and show legal moves
 function makeMove(row, col){
-        energy--;
-        $(".energy img:first-child").remove();        
-        score++;
-       
-        $(".score").text(score); 
-        
-        //these two variables adjust for use of the 'nth-child' css selector
+        if(playerTurn){
+            energy--;
+            $(".energy img:first-child").remove();        
+            score++;
+
+            $(".score").text(score); 
+                //adjust energy/energy display and tool/tool display
+            switch(board[row][col]){
+                case "reinforced":
+                    energy--;
+                    $(".energy img:first-child").remove();
+                    updateTool();                
+                    break;
+                case "block":  
+                    updateTool();
+                    playSound("regular");
+                    break;
+                case "heart":
+                    addEnergy(4);
+                    alert("Don't you love it! Bonus energy awarded");
+                    break;                    
+                case "clear":
+                    score-- //Subtract to counter normal addition              
+            } //End switch block
+        } //End if block
+    
+        //these two variables are adjusted for use with the 'nth-child' css selector
         var nth_col = col+1; 
         var player_col = playerTile[1]+1;
         $('.messages').text("You moved onto a "+board[row][col]+ " square");       
                 
-        //adjust energy/energy display and tool/tool display
-        switch(board[row][col]){
-            case "reinforced":
-                energy--;
-                $(".energy img:first-child").remove();
-                updateTool();                
-                break;
-            case "block":  
-                updateTool();
-                playSound("regular");
-                break;
-            case "heart":
-                addEnergy(4);
-                alert("You've got heart! Bonus energy awarded");
-                break;                    
-            case "clear":
-                score-- //Subtract to counter normal addition              
-        } //End switch statement
+        
     $('.displayEnergy').text(energy);               
                 
         //Clear the tile the player is coming from, after first turn  
@@ -109,23 +112,23 @@ function makeMove(row, col){
         board[row][col]="player"; 
         playerTile[0]=row;
         playerTile[1]=col;
-        //var clearTile= 
+        //update the display 
         $("."+CSS_CLASS[row]+" li:nth-child("+ nth_col+") img").attr("src", CSS_TILES["player"]);
         $("."+CSS_CLASS[row]+" li:nth-child("+ nth_col+") img").removeClass("clear");    
         
         if (score===12 & tileState!=="clear"){
-            alert("Energy bonus!");
+            alert("You cleared 12 blocks! 2 Bonus energies!");
             addEnergy(2);            
         }
-        if(score===victory){
+        if(score===victory&playerTurn===true){
             playSound("cheer");
             alert("Oh joy! You win!!!!!"); 
-            victory-- //so the message doesn't keep popping up after you win
+            playerTurn=false; 
         }
-        else if(energy===0 & victory>=ROWS*COLUMNS){
+        else if(energy===0 & victory>=ROWS*COLUMNS &playerTurn===true){
             playSound("boo");
             alert("Drat and double drat! I'm sorry, you lose.");
-            victory-- //so the message doesn't keep popping up after you lose
+            playerTurn=false; //so the message doesn't keep popping up after you lose
         }            
 }   //End of makeMove function 
     
@@ -220,9 +223,11 @@ $('.game li').click(function(){
         }
     }     
     
+    var moveVal = Math.abs(thisRow-playerTile[0])+Math.abs(thisCol-playerTile[1]); //Used to determine if tool use and move are legal
+    
     //check to see if useTool class is in effect, handle appropriately
     if($('body').attr('class')){
-        if(board[thisRow][thisCol]==="reinforced"){
+        if(board[thisRow][thisCol]==="reinforced"&moveVal===1){
             board[thisRow][thisCol]="block";
             tool-=4;
             playSound('useTool');
@@ -233,19 +238,22 @@ $('.game li').click(function(){
             $('body').removeClass('toolCursor'); 
             $(".tool h1").text(Math.floor(tool/4));
             return;
-        }       
+        }  
+        else if(moveVal>1){
+            alert("Tool may only be used on an adjacent square");
+        }
         else{
             alert("Use the tool on a reinforced square");
             return;
         }
     }
     //check if the move is legal and either make it or alert player why not    
-    var moveVal = Math.abs(thisRow-playerTile[0])+Math.abs(thisCol-playerTile[1]);
+    
     var energyNeeded = 1; //regular and clearblocks
     if(board[thisRow][thisCol]==="reinforced"){
         energyNeeded++
     }
-    else if(board[thisRow][thisCol]==="heart"){
+    else if(board[thisRow][thisCol]==="heart" || playerTurn===false){
         energyNeeded--
     }    
     if(moveVal===1&energyNeeded<=energy){
@@ -253,7 +261,7 @@ $('.game li').click(function(){
         computerTurn();
        }
     else if(energyNeeded>energy & victory>=COLUMNS*ROWS){alert("You do not have enough energy to make that move!")}
-    else if(moveVal===0){alert("Must move to a new tile!")}
+    else if(moveVal===0 & playerTurn===true){alert("Must move to a new tile!")}
     else if(victory<COLUMNS*ROWS) {
         //After game is over, this block allows player to move around board
         energy++;
@@ -266,7 +274,6 @@ $('.game li').click(function(){
  
 $(".useTool").click(function(){  
     var toolText = $('.useTool').text();
-    console.log("tooltext: " +toolText);
     if(tool>=4){
         $('body').attr('class')? $('body').removeClass('toolCursor') : $('body').addClass('toolCursor');
         toolText==="Use Tool" ? $(".useTool").text("Cancel") : $(".useTool").text("Use Tool");
@@ -282,10 +289,32 @@ $(".useTool").click(function(){
 $('.newGame').click(function(){
     newGame();
 });
-playSound('backgroundMusic');
-setInterval(function(){
-    playSound('backgroundMusic');
-},10600);
+    
+//var music= setInterval(function(){
+//    playSound('backgroundMusic');
+//},10600);
+
+$(".music").click(function(){
+    var musicText = $(".music").text();
+    alert(musicText);
+    if (musicText==="Pause Music"){
+      stopSound('backgroundMusic');
+      clearInterval(music);
+      $('.music').text("Start Music");
+      alert("Music Paused");
+    } 
+    else{
+        playSound('backgroundMusic');
+        
+        $('.music').text("Pause Music");
+      alert("Music Resumed");
+        
+    }
+    
+})
+    
+
+
 newGame();    
     
     

@@ -160,6 +160,10 @@ input[type=submit] {
     
 }
 
+.music{
+    margin-top: 10px;
+}
+
 /* -----------LINKS--------------- */
 
 a:link,

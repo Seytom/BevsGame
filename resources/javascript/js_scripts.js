@@ -100,7 +100,7 @@ function makeMove(row, col){
     $('.displayEnergy').text(energy);               
                 
         //Clear the tile the player is coming from, after first turn  
-        if(score>0){
+        if(score>1){
             board[playerTile[0]][playerTile[1]]="clear";        
             $("."+CSS_CLASS[playerTile[0]]+" li:nth-child("+ player_col+") img").attr("src", CSS_TILES["clear"]);        
             $("."+CSS_CLASS[playerTile[0]]+" li:nth-child("+ player_col+")").addClass("clear");

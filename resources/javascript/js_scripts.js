@@ -198,7 +198,6 @@ function computerTurn(){
     else if(board[compMove[0]][compMove[1]]==="reinforced"||board[compMove[0]][compMove[1]]==="locked"){
         board[compMove[0]][compMove[1]]="barbed";
         barbedArray.push([compMove[0],compMove[1]]);
-        alert("barbed array: " +lockedArray.toString());
         var cssCol = compMove[1]+1;
         $(".compMove").text(compMove[0]+", "+compMove[1]);
         $("." + CSS_CLASS[compMove[0]]+ " "+ "li:nth-child("+cssCol+") img").attr('src', CSS_TILES["barbed"]);

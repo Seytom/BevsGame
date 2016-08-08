@@ -20,7 +20,7 @@ $(document).ready(function(){
     var COLUMNS = 4;
     var CSS_CLASS = ["zero", "one", "two", "three", "four", "five"];  //array to convert row/col numbers to/from css selectors 
     //var BOARD_STATES = ["block", "heart", "clear", "reinforced", "player"];
-    var CSS_TILES = {"block":"resources/images/regularBlocks.png" , "heart":'resources/images/energyHearts.png', "clear":"resources/images/regularBlocks.png", "reinforced":"resources/images/reinforcedBlocks.png", "player":"resources/images/playerBlocks.png" };
+    var CSS_TILES = {"block":"resources/images/regularBlocks.png" , "heart":'resources/images/energyHearts.png', "clear":"resources/images/regularBlocks.png", "reinforced":"resources/images/reinforcedBlocks.png", "player":"resources/images/playerBlocks.png", "locked":"resources/images/brickLocked.jpg", "barbed":"resources/images/brickBarbedWire.jpg" };
     var playerTurn = true;
     var score = 0;
     var tool = 0;
@@ -28,6 +28,8 @@ $(document).ready(function(){
     var energy = 24;
     var playerTile; //variable for storing location of player tile, initially off the board so undefined here
     var board = Array.matrix(ROWS, COLUMNS, "block");
+    var lockedArray = [];//These two variables are used for tracking bound blocks (can't be changed by player)
+    var barbedArray = [];
     
     //-----------------------------------------------------//
                        // FUNCTIONS //    
@@ -162,6 +164,27 @@ function newGame(){
     
 function computerTurn(){
     var compMove = random_block();
+    if(lockedArray.length>0){  //locked blocks turned to reinforced
+        var len = lockedArray.length;
+        for(var counter=0; counter<len; counter++){
+           board[lockedArray[counter][0]][lockedArray[counter][1]]="reinforced";
+           var cssCol = lockedArray[counter][1]+1; //Adjust col number for use with nth-child
+           $("." + CSS_CLASS[lockedArray[counter][0]]+ " "+ "li:nth-child("+cssCol+") img").attr('src', CSS_TILES["reinforced"]);
+        }
+        lockedArray=[]//All locked tiles should have been reduced to reinforced tiles
+    }
+    if(barbedArray.length>0){  //barbed blocks turned to locked
+        len = barbedArray.length;
+        for(counter=0;counter<len;counter++){
+           board[barbedArray[counter][0]][barbedArray[counter][1]]="locked";
+           var cssCol = barbedArray[counter][1]+1; //Adjust col number for use with nth-child
+           $("." + CSS_CLASS[barbedArray[counter][0]]+ " "+ "li:nth-child("+cssCol+") img").attr('src', CSS_TILES["locked"]);
+            lockedArray.push([barbedArray[counter][0],barbedArray[counter][1]]);
+        }
+        barbedArray=[]//All barbed tiles should have been reduced to locked tiles
+        
+    }
+    
     if(board[compMove[0]][compMove[1]]==="block"){
        playSound("reinforce");
        setTimeout(function(){
@@ -170,9 +193,17 @@ function computerTurn(){
        board[compMove[0]][compMove[1]]="reinforced";
        var cssCol = compMove[1]+1; //Adjust col number for use with nth-child
        $(".compMove").text(compMove[0]+", "+compMove[1]);
-       $("." + CSS_CLASS[compMove[0]]+ " "+ "li:nth-child("+cssCol+") img").attr('src', CSS_TILES["reinforced"]); 
-        
+       $("." + CSS_CLASS[compMove[0]]+ " "+ "li:nth-child("+cssCol+") img").attr('src', CSS_TILES["reinforced"]);   
     }
+    else if(board[compMove[0]][compMove[1]]==="reinforced"||board[compMove[0]][compMove[1]]==="locked"){
+        board[compMove[0]][compMove[1]]="barbed";
+        barbedArray.push([compMove[0],compMove[1]]);
+        alert("barbed array: " +lockedArray.toString());
+        var cssCol = compMove[1]+1;
+        $(".compMove").text(compMove[0]+", "+compMove[1]);
+        $("." + CSS_CLASS[compMove[0]]+ " "+ "li:nth-child("+cssCol+") img").attr('src', CSS_TILES["barbed"]);
+    }
+    
 } //End of computerTurn function
     
     // --- Sound Functions --- //
@@ -240,23 +271,27 @@ $('.game li').click(function(){
             return;
         }  
         else if(moveVal>1){
-            alert("Tool may only be used on an adjacent square");
+            alert("Tool may only be used on an adjacent, reinforced square");
         }
         else{
-            alert("Use the tool on a reinforced square");
+            alert("Use the tool on a reinforced square (not a barbed wire or locked block)");
             return;
         }
     }
     //check if the move is legal and either make it or alert player why not    
     
     var energyNeeded = 1; //regular and clearblocks
+    if(board[thisRow][thisCol]==="barbed"||board[thisRow][thisCol]==="locked"){
+        alert("You can't move on to a barbed wire or locked square!");
+    }
+    
     if(board[thisRow][thisCol]==="reinforced"){
         energyNeeded++
     }
     else if(board[thisRow][thisCol]==="heart" || playerTurn===false){
         energyNeeded--
     }    
-    if(moveVal===1&energyNeeded<=energy){
+    if(moveVal===1&energyNeeded<=energy&board[thisRow][thisCol]!=="barbed"&board[thisRow][thisCol]!=="locked"){
         makeMove(thisRow, thisCol);
         computerTurn();
        }
